@@ -1,6 +1,7 @@
 import Sidebar from './Sidebar.jsx'
 import Topbar from './Topbar.jsx'
 import ImpactBar from './ImpactBar.jsx'
+import AIChatbot from './AIChatbot.jsx'
 
 export default function Layout({ children }) {
   return (
@@ -16,6 +17,7 @@ export default function Layout({ children }) {
           🔒 Privacy-First · Aggregated Data Only · No Personal Tracking · © PESITM Campus Autopilot 2026
         </footer>
       </div>
+      <AIChatbot />
     </div>
   )
 }
