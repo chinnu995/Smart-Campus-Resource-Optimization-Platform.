@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import CampusMap from '../components/Map.jsx'
 import { useCampus } from '../context/CampusStateContext.jsx'
 import { Plus, X, Save } from 'lucide-react'
 
@@ -24,7 +23,7 @@ export default function TwinMapPage() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-hero font-medium text-navy">Digital Twin · Campus View</h2>
+          <h2 className="text-hero font-medium text-navy">Digital Twin · Campus Directory</h2>
           <p className="text-body text-textmute mt-1">
             Campus › {selected ? `Block ${selected.block} › Floor ${selected.floor} › ${selected.code}` : "All Blocks"}
           </p>
@@ -38,12 +37,30 @@ export default function TwinMapPage() {
       </div>
 
       <div className="grid grid-cols-3 gap-4">
-        <div className="col-span-2">
-          <CampusMap
-            rooms={state.rooms}
-            onRoomClick={setSelected}
-            highlightRoomId={selected?.id}
-          />
+        <div className="col-span-2 bg-white rounded-card p-5 border border-gray-100 shadow-sm overflow-hidden">
+          <h3 className="text-nav font-semibold text-navy mb-4">Campus Rooms Directory</h3>
+          <div className="space-y-5 overflow-y-auto max-h-[500px] pr-2">
+            {["A", "B", "C"].map(block => (
+              <div key={block} className="border-b border-gray-100 pb-4 last:border-0 last:pb-0">
+                <p className="text-label uppercase tracking-wider text-orange font-bold mb-2">Block {block}</p>
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                  {state.rooms.filter(r => r.block === block).map(r => (
+                    <button
+                      key={r.id}
+                      onClick={() => setSelected(r)}
+                      className={`p-3 rounded-xl border text-left flex flex-col justify-between h-20 transition-all duration-200
+                        ${selected?.id === r.id 
+                          ? "border-orange bg-orange/5 ring-1 ring-orange text-navy" 
+                          : "border-gray-100 bg-page hover:border-gray-300 text-navy"}`}
+                    >
+                      <span className="font-semibold text-body leading-none">{r.code}</span>
+                      <span className="text-label text-textmute uppercase tracking-wider text-[10px] mt-1">{r.type}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="bg-white rounded-card p-5 border border-gray-100">

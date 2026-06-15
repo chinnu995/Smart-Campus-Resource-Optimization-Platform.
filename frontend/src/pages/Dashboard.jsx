@@ -28,7 +28,7 @@ const StatTile = ({ icon: Icon, label, value, accent }) => (
 )
 
 export default function Dashboard() {
-  const { updateImpact } = useCampus()
+  const { state, updateImpact } = useCampus()
   const { user, can } = useAuth()
   const [actions, setActions] = useState(mockActions)
   
@@ -90,6 +90,11 @@ export default function Dashboard() {
       {/* Quick Shortcuts (One-click) */}
       <QuickShortcuts />
 
+      {/* Prominent Live Campus Map (Consolidated and visible to Students, Faculty, and Admin) */}
+      <div>
+        <CampusMap rooms={state.rooms} />
+      </div>
+
       {/* Differential Feature Section */}
       <div className="grid grid-cols-3 gap-4">
         <div className="col-span-2">
@@ -100,7 +105,12 @@ export default function Dashboard() {
                <FacultyEfficiencyPanel />
             </div>
           ) : (
-            <CampusMap rooms={mockRooms} />
+            <div className="bg-white rounded-card p-5 border border-gray-100 flex flex-col items-center justify-center text-center h-full shadow-sm">
+              <p className="text-nav font-medium text-navy mb-1">Administrative Optimization</p>
+              <p className="text-body text-textmute max-w-sm">
+                Use the quick action cards below to configure automatic lighting, thermal profiles, and department schedules.
+              </p>
+            </div>
           )}
         </div>
         <div>
@@ -128,14 +138,6 @@ export default function Dashboard() {
           )}
         </div>
       </div>
-
-      {/* Only show full map for Management roles below features if they are students/faculty */}
-      {(isStudent || isFaculty) && (
-        <div>
-          <h3 className="text-nav font-medium text-navy mb-3">Live Campus State</h3>
-          <CampusMap rooms={mockRooms} />
-        </div>
-      )}
 
       {/* Action cards - Hide for students, they don't care about lighting controls usually */}
       {!isStudent && (
