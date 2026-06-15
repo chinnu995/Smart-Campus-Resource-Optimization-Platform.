@@ -3,7 +3,6 @@ import CampusMap from '../components/Map.jsx'
 import AutopilotPanel from '../components/AutopilotPanel.jsx'
 import ActionCard from '../components/ActionCard.jsx'
 import RoleGuard from '../components/RoleGuard.jsx'
-import LiveLocationMap from '../components/LiveLocationMap.jsx'
 import StudyZoneHeatmap from '../components/StudyZoneHeatmap.jsx'
 import FacultyEfficiencyPanel from '../components/FacultyEfficiencyPanel.jsx'
 import { mockRooms, mockActions } from '../mockData.js'
@@ -90,9 +89,6 @@ export default function Dashboard() {
 
       {/* Quick Shortcuts (One-click) */}
       <QuickShortcuts />
-
-      {/* Live Location Map */}
-      <LiveLocationMap />
 
       {/* Differential Feature Section */}
       <div className="grid grid-cols-3 gap-4">
