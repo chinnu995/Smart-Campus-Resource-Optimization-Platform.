@@ -5,10 +5,11 @@ import ActionCard from '../components/ActionCard.jsx'
 import RoleGuard from '../components/RoleGuard.jsx'
 import StudyZoneHeatmap from '../components/StudyZoneHeatmap.jsx'
 import FacultyEfficiencyPanel from '../components/FacultyEfficiencyPanel.jsx'
+import FacilityMaintenancePanel from '../components/FacilityMaintenancePanel.jsx'
 import { mockRooms, mockActions } from '../mockData.js'
 import { useCampus } from '../context/CampusStateContext.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
-import { Zap, Building, Users, Wifi, GraduationCap, Briefcase } from 'lucide-react'
+import { Zap, Building, Users, Wifi, GraduationCap, Briefcase, Wrench } from 'lucide-react'
 import QuickShortcuts from '../components/QuickShortcuts.jsx'
 
 const StatTile = ({ icon: Icon, label, value, accent }) => (
@@ -33,7 +34,8 @@ export default function Dashboard() {
   const [actions, setActions] = useState(mockActions)
   
   const isStudent = user?.role === 'student'
-  const isFaculty = user?.role === 'faculty_member'
+  const isFaculty = user?.role === 'faculty_member' || user?.role === 'faculty'
+  const isMaintenance = user?.role === 'facility_maintenance'
 
   // Filter actions by role
   const visibleActions = actions.filter(a => {
@@ -68,14 +70,16 @@ export default function Dashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-hero font-medium text-navy flex items-center gap-2">
-            Welcome back, {user?.name?.split(' ')[0]} 
+            Welcome back, {user?.name?.split(' ')[0] || 'User'} 
             {isStudent && <GraduationCap size={24} className="text-orange" />}
             {isFaculty && <Briefcase size={24} className="text-navy" />}
+            {isMaintenance && <Wrench size={24} className="text-orange animate-bounce" />}
           </h2>
           <p className="text-body text-textmute mt-1">
-            {isStudent ? "Find the best study spots and track your schedule." : 
-             isFaculty ? "Monitor your department's efficiency and class impact." :
-             "Manage the PESITM campus digital twin and optimization pipeline."}
+            {isStudent && "Find the best study spots and track your schedule."}
+            {isFaculty && "Monitor your department's efficiency and class impact."}
+            {isMaintenance && "Manage campus service tickets, dispatch engineers, and monitor hardware telemetries."}
+            {!isStudent && !isFaculty && !isMaintenance && "Manage the PESITM campus digital twin and optimization pipeline."}
           </p>
         </div>
       </div>
@@ -96,48 +100,55 @@ export default function Dashboard() {
       </div>
 
       {/* Differential Feature Section */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="col-span-2">
-          {isStudent ? (
-            <StudyZoneHeatmap />
-          ) : isFaculty ? (
-            <div className="grid grid-cols-1 gap-4 h-full">
-               <FacultyEfficiencyPanel />
-            </div>
-          ) : (
-            <div className="bg-white rounded-card p-5 border border-gray-100 flex flex-col items-center justify-center text-center h-full shadow-sm">
-              <p className="text-nav font-medium text-navy mb-1">Administrative Optimization</p>
-              <p className="text-body text-textmute max-w-sm">
-                Use the quick action cards below to configure automatic lighting, thermal profiles, and department schedules.
-              </p>
-            </div>
-          )}
+      {isMaintenance ? (
+        <div className="space-y-3">
+          <h3 className="text-nav font-medium text-navy">Operations & Service Dispatch</h3>
+          <FacilityMaintenancePanel />
         </div>
-        <div>
-          {isStudent || isFaculty ? (
-             <div className="bg-navy text-white rounded-card p-6 h-full flex flex-col justify-center">
-               <h3 className="text-nav font-bold mb-2">Did you know?</h3>
-               <p className="text-body text-white/80 leading-relaxed">
-                 Using 'Deep Work' zones instead of busy common areas reduces your CO₂ exposure by up to 15%, increasing your cognitive performance by 22%.
-               </p>
-               <button className="mt-6 w-full py-2 bg-orange text-white rounded-pill text-label font-bold hover:bg-orange/90 transition-all">
-                 Learn More
-               </button>
-             </div>
-          ) : (
-            <RoleGuard cap="run_autopilot" fallback={
-              <div className="bg-white rounded-card p-5 border border-gray-100 h-full flex flex-col items-center justify-center text-center shadow-sm">
-                <p className="text-nav font-medium text-navy mb-1">Autopilot Restricted</p>
-                <p className="text-body text-textmute">
-                  Only Campus Management or IT Administration can run optimization.
+      ) : (
+        <div className="grid grid-cols-3 gap-4">
+          <div className="col-span-2">
+            {isStudent ? (
+              <StudyZoneHeatmap />
+            ) : isFaculty ? (
+              <div className="grid grid-cols-1 gap-4 h-full">
+                 <FacultyEfficiencyPanel />
+              </div>
+            ) : (
+              <div className="bg-white rounded-card p-5 border border-gray-100 flex flex-col items-center justify-center text-center h-full shadow-sm">
+                <p className="text-nav font-medium text-navy mb-1">Administrative Optimization</p>
+                <p className="text-body text-textmute max-w-sm">
+                  Use the quick action cards below to configure automatic lighting, thermal profiles, and department schedules.
                 </p>
               </div>
-            }>
-              <AutopilotPanel onComplete={handlePipelineComplete} />
-            </RoleGuard>
-          )}
+            )}
+          </div>
+          <div>
+            {isStudent || isFaculty ? (
+               <div className="bg-navy text-white rounded-card p-6 h-full flex flex-col justify-center">
+                 <h3 className="text-nav font-bold mb-2">Did you know?</h3>
+                 <p className="text-body text-white/80 leading-relaxed">
+                   Using 'Deep Work' zones instead of busy common areas reduces your CO₂ exposure by up to 15%, increasing your cognitive performance by 22%.
+                 </p>
+                 <button className="mt-6 w-full py-2 bg-orange text-white rounded-pill text-label font-bold hover:bg-orange/90 transition-all">
+                   Learn More
+                 </button>
+               </div>
+            ) : (
+              <RoleGuard cap="run_autopilot" fallback={
+                <div className="bg-white rounded-card p-5 border border-gray-100 h-full flex flex-col items-center justify-center text-center shadow-sm">
+                  <p className="text-nav font-medium text-navy mb-1">Autopilot Restricted</p>
+                  <p className="text-body text-textmute">
+                    Only Campus Management or IT Administration can run optimization.
+                  </p>
+                </div>
+              }>
+                <AutopilotPanel onComplete={handlePipelineComplete} />
+              </RoleGuard>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Action cards - Hide for students, they don't care about lighting controls usually */}
       {!isStudent && (
