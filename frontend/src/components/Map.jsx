@@ -183,18 +183,16 @@ export default function CampusMap({ rooms = [], onRoomClick, highlightRoomId }) 
               referrerPolicy="no-referrer-when-downgrade"
             />
             
-            {/* Map Badge/Floating Control */}
-            <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-md border border-gray-100 max-w-[240px]">
+            {/* Map Badge/Floating Control (Sleek and compact size) */}
+            <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-sm rounded-xl p-2 shadow-md border border-gray-100 max-w-[180px]">
               <div className="flex items-center gap-1.5 mb-1">
-                <Compass size={14} className="text-orange animate-spin-slow" />
-                <span className="text-label font-bold text-navy uppercase tracking-wider">PESITM Campus Info</span>
+                <Compass size={12} className="text-orange animate-spin-slow" />
+                <span className="text-[9px] font-bold text-navy uppercase tracking-wider">PESITM Campus</span>
               </div>
-              <p className="text-body text-navy font-semibold">PES Institute of Technology & Management</p>
-              <p className="text-label text-textmute mt-0.5">Sagar Road, Shivamogga, Karnataka 577204</p>
-              <div className="mt-2 pt-2 border-t border-gray-100 flex flex-col gap-1 text-label text-textmute">
-                <p>📍 Lat: 13.9338° N</p>
-                <p>📍 Lng: 75.5642° E</p>
-              </div>
+              <p className="text-[10px] text-textmute leading-tight">Sagar Road, Shivamogga</p>
+              <p className="text-[9px] text-navy font-semibold mt-1 bg-page px-1.5 py-0.5 rounded border border-gray-200/50">
+                13.9338° N, 75.5642° E
+              </p>
             </div>
 
             {/* Floating Map Layer Selector Control */}
