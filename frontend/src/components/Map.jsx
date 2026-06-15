@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Map, Grid, ExternalLink, Compass } from 'lucide-react'
+import { Map, Grid, ExternalLink, Compass, Layers } from 'lucide-react'
 
 const STATUS_STYLES = {
   free:     { bg: "#c0dd97", text: "#27500a", label: "Free" },
@@ -11,6 +11,7 @@ const STATUS_STYLES = {
 
 export default function CampusMap({ rooms = [], onRoomClick, highlightRoomId }) {
   const [viewMode, setViewMode] = useState("twin") // "twin" | "natural"
+  const [mapLayer, setMapLayer] = useState("h") // "h" for Hybrid, "m" for Standard Map, "p" for Terrain
   const [activeBlock, setActiveBlock] = useState("A")
   const filtered = rooms.filter(r => r.block === activeBlock)
   
@@ -133,17 +134,17 @@ export default function CampusMap({ rooms = [], onRoomClick, highlightRoomId }) 
         /* Natural Location Map view (embedded Hybrid/Satellite Google Map + OpenStreetMap details) */
         <div className="space-y-4 animate-in fade-in duration-300">
           <div className="relative rounded-card overflow-hidden border border-gray-100 shadow-inner" style={{ height: 400 }}>
-            {/* Embedded Hybrid Map (No API Key Required for search embed query, t=h enables hybrid satellite/labels) */}
+            {/* Embedded Hybrid Map (No API Key Required for search embed query, mapLayer determines the map type) */}
             <iframe
               title="PESITM Shivamogga Natural Location Map"
-              src="https://maps.google.com/maps?q=PESITM%20Shivamogga&t=h&z=17&ie=UTF8&iwloc=&output=embed"
+              src={`https://maps.google.com/maps?q=PESITM%20Shivamogga&t=${mapLayer}&z=17&ie=UTF8&iwloc=&output=embed`}
               style={{ width: '100%', height: '100%', border: 0 }}
               allowFullScreen=""
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
             />
             
-            {/* Map Badge/Floating Control */}
+            {/* Map Badge/Floating Control (Left) */}
             <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm rounded-xl p-3 shadow-md border border-gray-100 max-w-[240px]">
               <div className="flex items-center gap-1.5 mb-1">
                 <Compass size={14} className="text-orange animate-spin-slow" />
@@ -155,6 +156,30 @@ export default function CampusMap({ rooms = [], onRoomClick, highlightRoomId }) 
                 <p>📍 Lat: 13.9338° N</p>
                 <p>📍 Lng: 75.5642° E</p>
               </div>
+            </div>
+
+            {/* Floating Map Layer Selector Control (Right) */}
+            <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm rounded-xl p-2 shadow-md border border-gray-100 flex flex-col gap-1">
+              <div className="flex items-center gap-1 px-2 py-1 border-b border-gray-100 mb-1">
+                <Layers size={13} className="text-orange" />
+                <span className="text-label font-bold text-navy uppercase tracking-wider">Map Layers</span>
+              </div>
+              {[
+                { id: "h", label: "Hybrid Satellite" },
+                { id: "m", label: "Standard Map" },
+                { id: "p", label: "Terrain View" }
+              ].map((layer) => (
+                <button
+                  key={layer.id}
+                  onClick={() => setMapLayer(layer.id)}
+                  className={`px-3 py-1.5 rounded-lg text-label font-medium text-left transition-all duration-150 min-w-[130px]
+                    ${mapLayer === layer.id
+                      ? "bg-orange text-white shadow-sm"
+                      : "text-navy hover:bg-page"}`}
+                >
+                  {layer.label}
+                </button>
+              ))}
             </div>
           </div>
 
