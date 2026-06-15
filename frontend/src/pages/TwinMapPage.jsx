@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { useCampus } from '../context/CampusStateContext.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 import { Plus, X, Save } from 'lucide-react'
 
 export default function TwinMapPage() {
   const { state, addRoom } = useCampus()
+  const { user } = useAuth()
   const [selected, setSelected] = useState(null)
   const [showAdd, setShowAdd] = useState(false)
   const [newRoom, setNewRoom] = useState({
@@ -19,6 +21,8 @@ export default function TwinMapPage() {
     setShowAdd(false)
   }
 
+  const isStudent = user?.role === 'student'
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -28,12 +32,14 @@ export default function TwinMapPage() {
             Campus › {selected ? `Block ${selected.block} › Floor ${selected.floor} › ${selected.code}` : "All Blocks"}
           </p>
         </div>
-        <button
-          onClick={() => setShowAdd(true)}
-          className="flex items-center gap-2 px-4 h-10 bg-orange text-white rounded-pill text-body font-medium hover:bg-orange/90 transition-colors"
-        >
-          <Plus size={18} /> Add Room
-        </button>
+        {!isStudent && (
+          <button
+            onClick={() => setShowAdd(true)}
+            className="flex items-center gap-2 px-4 h-10 bg-orange text-white rounded-pill text-body font-medium hover:bg-orange/90 transition-colors"
+          >
+            <Plus size={18} /> Add Room
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-3 gap-4">
